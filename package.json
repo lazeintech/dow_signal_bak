@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "This example is so cool.",
   "main": "main.js",
+  "dependencies": {
+    "node-binance-api": "^0.13.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
