@@ -2,8 +2,8 @@
 
 const Binance = require('node-binance-api');
 const binance = new Binance().options({
-  APIKEY: 'XTJWomJZIORsaFgHIjGvw354KOfyryjd25XRtjerksvveQKsTsaankop3dCLztgl',
-  APISECRET: 'pamRqGMvvrLfdqJudDuaCrleSwgaDmsBru25eXjbWBXFMC2VJ3AAMECwlj1MX9Bo'
+  APIKEY: process.env.APIKEY,
+  APISECRET: process.env.APISECRET
 });
 
 func();
