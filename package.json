@@ -2,9 +2,11 @@
   "name": "dow_signal",
   "version": "1.0.0",
   "description": "This example is so cool.",
-  "main": "main.js",
+  "main": "server.js",
   "dependencies": {
-    "node-binance-api": "^0.13.0"
+    "node-binance-api": "^0.13.0",
+    "node-telegram-bot-api": "^0.54.0",
+    "node-schedule": "^2.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
