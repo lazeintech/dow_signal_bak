@@ -1,23 +1,37 @@
 'use strict';
+process.env.NTBA_FIX_319 = 1; // fix 'node-telegram-bot-api deprecated Automatic enabling of cancellation of promises is deprecated.'
 
 const TelegramBot = require('node-telegram-bot-api');
 const Binance = require('node-binance-api');
 const Schedule = require("node-schedule");
+const Express = require('express')
 const Dotenv = require('dotenv'); // For local env
 Dotenv.config();
+
+const app = Express();
+const port = process.env.PORT;
+const token = process.env.BOTTOKEN;
+const bot = new TelegramBot(token, {polling: true});
+const binance = new Binance().options({
+    APIKEY: process.env.APIKEY,
+    APISECRET: process.env.APISECRET
+});
 let job;
 
-// replace the value below with the Telegram token you receive from @BotFather
-const token = process.env.BOTTOKEN;
-// Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, {polling: true});
+/*
+ * Frontend
+ */
+app.get('/', (req, res) => {
+    res.send('Hello, dow_signal bot is running!')
+})
+  
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`)
+})
 
-const binance = new Binance().options({
-  APIKEY: process.env.APIKEY,
-  APISECRET: process.env.APISECRET
-});
-
-
+/*
+ * Backend
+ */
 bot.onText(/\/start/, message => {
     // job = Schedule.scheduleJob('*/5 * * * * *', () => {
     //     bot.sendMessage(message.chat.id, "responce");
@@ -60,23 +74,3 @@ bot.on('message', (msg) => {
     bot.sendMessage(chatId, 'Received your message');
 });
 
-// async function func(){
-//     // while (true) {
-//         await waitforme(5000);
-//         console.info("5sec passed");
-//         var d = new Date();
-//         // Intervals: 1m,3m,5m,15m,30m,1h,2h,4h,6h,8h,12h,1d,3d,1w,1M
-//         binance.candlesticks("ETHUSDT", "5m", (error, ticks, symbol) => {
-//             // console.info("candlesticks()", ticks);
-//             // let last_tick = ticks[ticks.length - 1];
-//             // let [time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored] = last_tick;
-//             // console.info(symbol+" last close: "+close);
-//         }, {limit: 1, endTime: d.getTime()});
-//     // }
-// }
-
-// function waitforme(milisec) {
-//     return new Promise(resolve => {
-//         setTimeout(() => { resolve('') }, milisec);
-//     })
-// }

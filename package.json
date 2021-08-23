@@ -7,7 +7,8 @@
     "node-binance-api": "^0.13.0",
     "node-telegram-bot-api": "^0.54.0",
     "node-schedule": "^2.0.0",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
