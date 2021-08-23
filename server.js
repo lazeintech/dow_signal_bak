@@ -35,7 +35,7 @@ bot.onText(/\/cd (.+)/, (msg, match) => {
     // 'msg' is the received Message from Telegram
     // 'match' is the result of executing the regexp above on the text content
     // of the message
-    job = Schedule.scheduleJob('*/5 * * * * *', () => {
+    job = Schedule.scheduleJob('*/30 * * * * *', () => {
         var d = new Date();
         console.info(match[1]);
         var token = match[1].split(" ")[0].toUpperCase();
