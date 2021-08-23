@@ -16,7 +16,7 @@ const binance = new Binance().options({
     APIKEY: process.env.APIKEY,
     APISECRET: process.env.APISECRET
 });
-let job;
+let job_cd;
 
 /*
  * Frontend
@@ -32,35 +32,41 @@ app.listen(port, () => {
 /*
  * Backend
  */
-bot.onText(/\/start/, message => {
-    // job = Schedule.scheduleJob('*/5 * * * * *', () => {
-    //     bot.sendMessage(message.chat.id, "responce");
-    // });
-});
-
-bot.onText(/\/stop/, message => {
-    if (job) {
-        job.cancel()
+bot.onText(/\/stop_cd/, (msg) => {
+    bot.sendMessage(msg.chat.id, `Stop candle report job_cd`);
+    if (job_cd) {
+        job_cd.cancel()
     }
 });
 
-// Matches "/cd [whatever]" -> candle
-bot.onText(/\/cd (.+)/, (msg, match) => {
+bot.onText(/\/start_cd (.+)/, (msg, match) => {
     // 'msg' is the received Message from Telegram
     // 'match' is the result of executing the regexp above on the text content
     // of the message
-    job = Schedule.scheduleJob('*/30 * * * * *', () => {
+    bot.sendMessage(msg.chat.id, "Start candle report job_cd");
+    job_cd = Schedule.scheduleJob('*/5 * * * * *', () => {
         var d = new Date();
         console.info(match[1]);
         var token = match[1].split(" ")[0].toUpperCase();
-        // Intervals: 1m,3m,5m,15m,30m,1h,2h,4h,6h,8h,12h,1d,3d,1w,1M
         var interval = match[1].split(" ")[1];
+        // Intervals: 1m,3m,5m,15m,30m,1h,2h,4h,6h,8h,12h,1d,3d,1w,1M
         binance.candlesticks(token, interval, (error, ticks, symbol) => {
-            // console.info("candlesticks()", ticks);
-            // let last_tick = ticks[ticks.length - 1];
-            // let [time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored] = last_tick;
-            // console.info(symbol+" last close: "+close);
-            bot.sendMessage(msg.chat.id, JSON.stringify(ticks, null, "\t"));
+            if (error != null) {
+                console.info(error.body);
+                bot.sendMessage(msg.chat.id, error.body);
+            } else {
+                // console.info("candlesticks()", ticks);
+                let last_tick = ticks[ticks.length - 1];
+                let [time, open, high, low, close, volume, closeTime, assetVolume, trades, buyBaseVolume, buyAssetVolume, ignored] = last_tick;
+                // console.info(symbol+" last close: "+close);
+                var response = 'time=' + new Date(time).toTimeString();
+                response += '\nopen=' + parseFloat(open).toFixed(2);
+                response += '\nhigh=' + parseFloat(high).toFixed(2);
+                response += '\nlow=' + parseFloat(low).toFixed(2);
+                response += '\nclose=' + parseFloat(close).toFixed(2);
+                response += '\ncloseTime=' + new Date(closeTime).toTimeString();
+                bot.sendMessage(msg.chat.id, response);
+            }
         }, {limit: 1, endTime: d.getTime()});
     });
 });
@@ -68,9 +74,7 @@ bot.onText(/\/cd (.+)/, (msg, match) => {
 // Listen for any kind of message. There are different kinds of
 // messages.
 bot.on('message', (msg) => {
-    const chatId = msg.chat.id;
-
-    // send a message to the chat acknowledging receipt of their message
-    bot.sendMessage(chatId, 'Received your message');
+    // const chatId = msg.chat.id;
+    // bot.sendMessage(chatId, 'Received your message');
 });
 
