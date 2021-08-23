@@ -3,6 +3,8 @@
 const TelegramBot = require('node-telegram-bot-api');
 const Binance = require('node-binance-api');
 const Schedule = require("node-schedule");
+const Dotenv = require('dotenv'); // For local env
+Dotenv.config();
 let job;
 
 // replace the value below with the Telegram token you receive from @BotFather
@@ -33,7 +35,7 @@ bot.onText(/\/cd (.+)/, (msg, match) => {
     // 'msg' is the received Message from Telegram
     // 'match' is the result of executing the regexp above on the text content
     // of the message
-    job = Schedule.scheduleJob('* */5 * * * *', () => {
+    job = Schedule.scheduleJob('*/5 * * * * *', () => {
         var d = new Date();
         console.info(match[1]);
         var token = match[1].split(" ")[0].toUpperCase();
